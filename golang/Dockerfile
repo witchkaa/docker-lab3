@@ -9,17 +9,9 @@ COPY . .
 
 RUN CGO_ENABLED=0 go build -ldflags '-extldflags "-static"' -o /myapp
 
-FROM scratch
+FROM gcr.io/distroless/base
 
-COPY --from=firststage /myapp /myapp
+COPY --from=firststage /myapp /
 COPY --from=firststage /app/templates/index.html /templates/
-
-COPY --from=firststage /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
-COPY --from=firststage /etc/passwd /etc/passwd
-
-USER nobody
-
-EXPOSE 8080
 
 CMD ["/myapp", "serve"]
