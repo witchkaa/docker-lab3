@@ -1,14 +1,18 @@
-FROM node:20-slim
+FROM node:20 AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
 
-COPY . .
-
 RUN npm install
 
-RUN npm run build
+COPY . .
+
+FROM node:20-slim
+
+WORKDIR /app
+
+COPY --from=builder /app .
 
 EXPOSE 8080
 
